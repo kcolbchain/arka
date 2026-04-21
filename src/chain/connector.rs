@@ -1,31 +1,36 @@
 //! Chain connector — manages RPC connections and provider state.
 
-use alloy::providers::{Provider, ProviderBuilder};
 use alloy::primitives::{Address, U256};
+use alloy::providers::{Provider, ProviderBuilder};
 
 use super::Chain;
 use crate::error::{ArkaError, Result};
+
+/// Alloy's default filled provider — the concrete type returned by
+/// `ProviderBuilder::new().connect_http(...)`. Aliased here to keep
+/// the public struct signature readable (and clippy quiet).
+type DefaultFilledProvider = alloy::providers::fillers::FillProvider<
+    alloy::providers::fillers::JoinFill<
+        alloy::providers::Identity,
+        alloy::providers::fillers::JoinFill<
+            alloy::providers::fillers::GasFiller,
+            alloy::providers::fillers::JoinFill<
+                alloy::providers::fillers::BlobGasFiller,
+                alloy::providers::fillers::JoinFill<
+                    alloy::providers::fillers::NonceFiller,
+                    alloy::providers::fillers::ChainIdFiller,
+                >,
+            >,
+        >,
+    >,
+    alloy::providers::RootProvider,
+>;
 
 /// Manages connection to a specific chain.
 pub struct ChainConnector {
     chain: Chain,
     rpc_url: String,
-    provider: alloy::providers::fillers::FillProvider<
-        alloy::providers::fillers::JoinFill<
-            alloy::providers::Identity,
-            alloy::providers::fillers::JoinFill<
-                alloy::providers::fillers::GasFiller,
-                alloy::providers::fillers::JoinFill<
-                    alloy::providers::fillers::BlobGasFiller,
-                    alloy::providers::fillers::JoinFill<
-                        alloy::providers::fillers::NonceFiller,
-                        alloy::providers::fillers::ChainIdFiller,
-                    >,
-                >,
-            >,
-        >,
-        alloy::providers::RootProvider,
-    >,
+    provider: DefaultFilledProvider,
 }
 
 impl ChainConnector {
@@ -80,5 +85,10 @@ impl ChainConnector {
     /// Get the RPC URL.
     pub fn rpc_url(&self) -> &str {
         &self.rpc_url
+    }
+
+    /// Get a reference to the underlying alloy provider (for contract calls).
+    pub fn provider(&self) -> &DefaultFilledProvider {
+        &self.provider
     }
 }

@@ -12,7 +12,7 @@ type U160 = Uint<160, 3>;
 use crate::chain::Chain;
 use crate::error::{ArkaError, Result};
 
-use super::types::{FeeTier, SwapParams};
+use super::types::FeeTier;
 
 /// Uniswap V3 SwapRouter02 addresses per chain.
 fn router_address(chain: Chain) -> Result<Address> {
@@ -24,7 +24,8 @@ fn router_address(chain: Chain) -> Result<Address> {
         Chain::Polygon => "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
         _ => return Err(ArkaError::Dex(format!("No Uniswap V3 router on {chain}"))),
     };
-    addr.parse().map_err(|e| ArkaError::Dex(format!("Invalid router address: {e}")))
+    addr.parse()
+        .map_err(|e| ArkaError::Dex(format!("Invalid router address: {e}")))
 }
 
 // Generate Rust bindings for the SwapRouter02 exactInputSingle function.
@@ -59,6 +60,11 @@ impl UniswapV3Router {
             chain,
             router: router_address(chain),
         }
+    }
+
+    /// Get the chain this router targets.
+    pub fn chain(&self) -> Chain {
+        self.chain
     }
 
     /// Get the router address for this chain.

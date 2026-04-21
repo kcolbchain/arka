@@ -1,6 +1,6 @@
 //! DEX types — swap parameters, results, fee tiers.
 
-use alloy::primitives::{Address, U256};
+use alloy::primitives::U256;
 use serde::{Deserialize, Serialize};
 
 use crate::chain::Chain;

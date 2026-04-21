@@ -1,14 +1,16 @@
 //! Agent — the core abstraction. An autonomous entity with a wallet, chain connection,
 //! and modules for DEX, MPP, and oracle interaction.
 
+pub mod account;
+
 use alloy::primitives::{Address, U256};
 
 use crate::chain::{Chain, ChainConnector};
-use crate::wallet::Wallet;
 use crate::dex::DexModule;
+use crate::error::{ArkaError, Result};
 use crate::mpp::MppClient;
 use crate::oracle::OracleModule;
-use crate::error::{ArkaError, Result};
+use crate::wallet::Wallet;
 
 /// An autonomous blockchain agent.
 pub struct Agent {
@@ -78,20 +80,11 @@ impl Agent {
 }
 
 /// Builder for constructing agents.
+#[derive(Default)]
 pub struct AgentBuilder {
     wallet: Option<Wallet>,
     chain: Option<Chain>,
     rpc_url: Option<String>,
-}
-
-impl Default for AgentBuilder {
-    fn default() -> Self {
-        Self {
-            wallet: None,
-            chain: None,
-            rpc_url: None,
-        }
-    }
 }
 
 impl AgentBuilder {
@@ -115,8 +108,12 @@ impl AgentBuilder {
 
     /// Build the agent.
     pub async fn build(self) -> Result<Agent> {
-        let wallet = self.wallet.ok_or_else(|| ArkaError::Config("Wallet is required".into()))?;
-        let chain = self.chain.ok_or_else(|| ArkaError::Config("Chain is required".into()))?;
+        let wallet = self
+            .wallet
+            .ok_or_else(|| ArkaError::Config("Wallet is required".into()))?;
+        let chain = self
+            .chain
+            .ok_or_else(|| ArkaError::Config("Chain is required".into()))?;
 
         let connector = match &self.rpc_url {
             Some(url) => ChainConnector::with_rpc(chain, url).await?,

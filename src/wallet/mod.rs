@@ -93,8 +93,9 @@ impl WalletManager {
         self.wallets.push(wallet);
     }
 
-    /// Get the next wallet in rotation.
-    pub fn next(&mut self) -> Option<&Wallet> {
+    /// Get the next wallet in rotation. Named `next_wallet` (not `next`)
+    /// to avoid ambiguity with `Iterator::next`.
+    pub fn next_wallet(&mut self) -> Option<&Wallet> {
         if self.wallets.is_empty() {
             return None;
         }

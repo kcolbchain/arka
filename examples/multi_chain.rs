@@ -26,7 +26,11 @@ async fn main() -> Result<()> {
             chain,
             block,
             balance,
-            if chain.stablecoin_gas() { "stablecoin" } else { "native" }
+            if chain.stablecoin_gas() {
+                "stablecoin"
+            } else {
+                "native"
+            }
         );
     }
 

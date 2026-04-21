@@ -48,7 +48,8 @@ impl MppClient {
     /// Make a request to an MPP-enabled endpoint.
     /// If the server returns 402, parse payment options.
     pub async fn request(&self, url: &str) -> Result<MppResponse> {
-        let resp = self.http
+        let resp = self
+            .http
             .get(url)
             .send()
             .await
@@ -57,11 +58,13 @@ impl MppClient {
         match resp.status() {
             StatusCode::PAYMENT_REQUIRED => {
                 // Parse payment options from 402 response
-                let body = resp.text().await
+                let body = resp
+                    .text()
+                    .await
                     .map_err(|e| ArkaError::Mpp(format!("Failed to read 402 body: {e}")))?;
 
-                let options: PaymentOptions = serde_json::from_str(&body)
-                    .unwrap_or(PaymentOptions {
+                let options: PaymentOptions =
+                    serde_json::from_str(&body).unwrap_or(PaymentOptions {
                         methods: vec![],
                         amount: None,
                         currency: None,
@@ -71,13 +74,13 @@ impl MppClient {
                 Ok(MppResponse::PaymentRequired(options))
             }
             StatusCode::OK => {
-                let body = resp.text().await
+                let body = resp
+                    .text()
+                    .await
                     .map_err(|e| ArkaError::Mpp(format!("Failed to read response: {e}")))?;
                 Ok(MppResponse::Success(body))
             }
-            status => {
-                Err(ArkaError::Mpp(format!("Unexpected status: {status}")))
-            }
+            status => Err(ArkaError::Mpp(format!("Unexpected status: {status}"))),
         }
     }
 

@@ -2,7 +2,7 @@
 //!
 //! Supports Chainlink price feeds and on-chain TWAP from DEX pools.
 
-use alloy::primitives::{Address, U256};
+use alloy::primitives::Address;
 use alloy::sol;
 
 use crate::chain::Chain;
@@ -54,11 +54,12 @@ impl OracleModule {
 
     /// Get the Chainlink feed address for a given pair on this chain.
     pub fn feed_address(&self, pair: &str) -> Result<Address> {
-        let addr_str = chainlink_feed(self.chain, pair)
-            .ok_or_else(|| ArkaError::Oracle(
-                format!("No Chainlink feed for {pair} on {}", self.chain)
-            ))?;
-        addr_str.parse().map_err(|e| ArkaError::Oracle(format!("Invalid feed address: {e}")))
+        let addr_str = chainlink_feed(self.chain, pair).ok_or_else(|| {
+            ArkaError::Oracle(format!("No Chainlink feed for {pair} on {}", self.chain))
+        })?;
+        addr_str
+            .parse()
+            .map_err(|e| ArkaError::Oracle(format!("Invalid feed address: {e}")))
     }
 
     /// Check if a Chainlink feed exists for a pair on this chain.
@@ -69,7 +70,8 @@ impl OracleModule {
     /// List available feeds for this chain.
     pub fn available_feeds(&self) -> Vec<&'static str> {
         let pairs = ["ETH/USD", "BTC/USD", "USDC/USD", "DAI/USD", "LINK/USD"];
-        pairs.into_iter()
+        pairs
+            .into_iter()
             .filter(|p| chainlink_feed(self.chain, p).is_some())
             .collect()
     }
