@@ -7,6 +7,7 @@ pub mod agent;
 pub mod chain;
 pub mod chains;
 pub mod dex;
+pub mod mcp;
 pub mod mpp;
 pub mod oracle;
 pub mod tx;
@@ -22,6 +23,7 @@ pub mod prelude {
     pub use crate::chain::Chain;
     pub use crate::chains::arbitrum::{AgentDepositClient, ArbitrumContracts};
     pub use crate::error::{ArkaError, Result};
+    pub use crate::mcp::{AgentDepositTool, ArkaTool, BalanceTool, McpServer, SwapQuoteTool};
     pub use crate::wallet::Wallet;
     pub use alloy::primitives::{Address, U256};
 }

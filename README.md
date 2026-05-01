@@ -110,6 +110,34 @@ cargo run --example basic_agent
 | `mpp_payment` | Pay for an API using MPP on Tempo |
 | `multi_chain` | Same agent operating across Base + Arbitrum + Optimism |
 
+## MCP
+
+arka can expose core primitives as [MCP](https://modelcontextprotocol.io/) tools over stdio:
+
+```bash
+ARKA_CHAIN=base cargo run --bin arka-mcp-server
+```
+
+Claude Desktop config example:
+
+```json
+{
+  "mcpServers": {
+    "arka": {
+      "command": "cargo",
+      "args": ["run", "--bin", "arka-mcp-server"],
+      "cwd": "/path/to/arka",
+      "env": {
+        "ARKA_CHAIN": "base",
+        "ARKA_RPC_URL": "https://mainnet.base.org"
+      }
+    }
+  }
+}
+```
+
+The server currently exposes `balance`, `swap_quote`, and `agent_account`.
+
 ## Contributing
 
 We welcome contributions. See [CONTRIBUTING.md](CONTRIBUTING.md) and issues tagged `good-first-issue`.
