@@ -109,6 +109,7 @@ cargo run --example basic_agent
 | `dex_swap` | Swap tokens on Uniswap V3 |
 | `mpp_payment` | Pay for an API using MPP on Tempo |
 | `multi_chain` | Same agent operating across Base + Arbitrum + Optimism |
+| `switchboard_x402_client` | Pay a [switchboard](https://github.com/kcolbchain/switchboard)-served HTTP-402 endpoint. Cross-language interop demo (Rust ↔ Python). |
 
 ## Contributing
 
