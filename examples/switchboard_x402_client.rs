@@ -159,8 +159,13 @@ async fn main() -> Result<()> {
         .ok_or_else(|| ArkaError::Mpp("empty accepts[]".into()))?;
     println!(
         "Server wants {} {} on chain_id={} to {}\n  scheme={} description={:?} expires_at={:?}",
-        offer.amount, offer.currency, offer.chain_id, offer.recipient,
-        offer.scheme, offer.description, offer.expires_at
+        offer.amount,
+        offer.currency,
+        offer.chain_id,
+        offer.recipient,
+        offer.scheme,
+        offer.description,
+        offer.expires_at
     );
 
     // ── Settle on-chain (stubbed in this demo) ────────────────────────
