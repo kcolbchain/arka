@@ -1,19 +1,20 @@
 //! Basic agent example — create an agent, check balance, read block number.
 
 use arka::prelude::*;
+use arka::wallet::EvmWallet;
 
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
 
-    // Generate a fresh wallet
-    let wallet = Wallet::generate()?;
+    // Generate a fresh EVM wallet
+    let wallet = EvmWallet::generate()?;
     println!("Agent wallet: {:?}", wallet.address());
 
     // Create agent on Base
     let agent = Agent::builder()
         .chain(Chain::Base)
-        .wallet(wallet)
+        .wallet(Box::new(wallet))
         .build()
         .await?;
 

@@ -58,7 +58,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct PaymentOffer {
-    amount: String, // uint256 as decimal string
+    amount: String,
     currency: String,
     recipient: String,
     chain_id: u64,
@@ -110,12 +110,10 @@ async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
     let endpoint = parse_args();
 
-    // Fresh ephemeral wallet for this demo — in production this would be
-    // a long-lived key fetched from arka's wallet manager.
-    let wallet = Wallet::generate()?;
+    let wallet = EvmWallet::generate()?;
     let agent = Agent::builder()
         .chain(Chain::Base)
-        .wallet(wallet)
+        .wallet(Box::new(wallet))
         .build()
         .await?;
     let payer_addr = format!("{:?}", agent.address());
@@ -123,22 +121,15 @@ async fn main() -> Result<()> {
 
     let client = reqwest::Client::new();
 
-    // ── First attempt — expect 402 ────────────────────────────────────
     let resp = client.get(&endpoint).send().await?;
 
     if resp.status() != StatusCode::PAYMENT_REQUIRED {
-        // Switchboard returned something else — either 200 already (the
-        // server doesn't gate this route), or some other error. Print and
-        // exit.
         println!("Unexpected status (no 402 dance needed): {}", resp.status());
         let body = resp.text().await.unwrap_or_default();
         println!("body: {body}");
         return Ok(());
     }
 
-    // Parse the 402 envelope. Switchboard ships it via the
-    // `X-Payment-Required` header as a JSON object with an `accepts: []`
-    // array — we pick the first entry.
     let header = resp
         .headers()
         .get("X-Payment-Required")
@@ -168,11 +159,6 @@ async fn main() -> Result<()> {
         offer.expires_at
     );
 
-    // ── Settle on-chain (stubbed in this demo) ────────────────────────
-    // In a real flow this is where arka would issue the actual ETH /
-    // ERC-20 transfer via `agent.send_value(...)` or the AgentEscrow
-    // contract from switchboard. For a demo against a local middleware
-    // running in "mock-settle" mode, an ephemeral tx-hash is sufficient.
     let tx_hash = format!("0x{:064x}", rand::random::<u128>() as u128);
 
     let proof = PaymentProof {
@@ -187,7 +173,6 @@ async fn main() -> Result<()> {
             .as_secs(),
     };
 
-    // ── Retry with the proof ──────────────────────────────────────────
     let mut headers = HeaderMap::new();
     let proof_json = serde_json::to_string(&proof)?;
     headers.insert(

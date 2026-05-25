@@ -1,20 +1,21 @@
-//! Multi-chain example — same wallet across Base, Arbitrum, and Optimism.
+//! Multi-chain example — same EVM wallet across Base, Arbitrum, and Optimism.
 
 use arka::prelude::*;
+use arka::wallet::EvmWallet;
 
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
 
-    let wallet = Wallet::generate()?;
-    println!("Wallet: {:?}\n", wallet.address());
+    let wallet = EvmWallet::generate()?;
+    println!("EVM Wallet: {:?}\n", wallet.address());
 
     let chains = [Chain::Base, Chain::Arbitrum, Chain::Optimism, Chain::Tempo];
 
     for chain in chains {
         let agent = Agent::builder()
             .chain(chain)
-            .wallet(wallet.clone())
+            .wallet(Box::new(wallet.clone()))
             .build()
             .await?;
 

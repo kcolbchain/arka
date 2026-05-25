@@ -11,6 +11,8 @@ pub mod mpp;
 pub mod oracle;
 pub mod tx;
 pub mod wallet;
+#[cfg(feature = "x402")]
+pub mod pay;
 
 mod error;
 pub use error::{ArkaError, Result};
@@ -22,6 +24,6 @@ pub mod prelude {
     pub use crate::chain::Chain;
     pub use crate::chains::arbitrum::{AgentDepositClient, ArbitrumContracts};
     pub use crate::error::{ArkaError, Result};
-    pub use crate::wallet::Wallet;
+    pub use crate::wallet::{EvmWallet, Wallet};
     pub use alloy::primitives::{Address, U256};
 }
