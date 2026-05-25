@@ -21,6 +21,13 @@ hex = "0.4"
 rand = "0.8"
 async-trait = "0.1"
 url = "2"
+ethers = { version = "2", optional = true }
+
+[features]
+default = ["evm"]
+evm = []
+solana = []
+ritual = ["ethers"]
 
 [dev-dependencies]
 tokio-test = "0.4"
