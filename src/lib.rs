@@ -8,6 +8,8 @@ pub mod chain;
 pub mod chains;
 pub mod dex;
 pub mod mpp;
+#[cfg(feature = "x402")]
+pub mod pay;
 pub mod oracle;
 pub mod tx;
 pub mod wallet;
