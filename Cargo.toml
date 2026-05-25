@@ -21,6 +21,14 @@ hex = "0.4"
 rand = "0.8"
 async-trait = "0.1"
 url = "2"
+alloy-signers = { version = "1", optional = true }
+
+[features]
+default = ["evm"]
+evm = []
+solana = []
+x402 = ["alloy-signers"]
+mpp = []
 
 [dev-dependencies]
 tokio-test = "0.4"
