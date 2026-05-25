@@ -21,6 +21,16 @@ hex = "0.4"
 rand = "0.8"
 async-trait = "0.1"
 url = "2"
+ed25519-dalek = { version = "2", optional = true }
+bs58 = { version = "0.5", optional = true }
+
+[features]
+default = ["evm"]
+evm = []
+solana = ["ed25519-dalek", "bs58"]
+x402 = []
+mpp = []
+ritual = []
 
 [dev-dependencies]
 tokio-test = "0.4"

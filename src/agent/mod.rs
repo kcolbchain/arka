@@ -10,11 +10,11 @@ use crate::dex::DexModule;
 use crate::error::{ArkaError, Result};
 use crate::mpp::MppClient;
 use crate::oracle::OracleModule;
-use crate::wallet::Wallet;
+use crate::wallet::{EvmWallet, Wallet};
 
 /// An autonomous blockchain agent.
 pub struct Agent {
-    wallet: Wallet,
+    wallet: Box<dyn Wallet>,
     chain: Chain,
     connector: ChainConnector,
     dex: DexModule,
@@ -28,9 +28,18 @@ impl Agent {
         AgentBuilder::default()
     }
 
-    /// Get the agent's wallet address.
+    /// Get the agent's wallet address (EVM).
     pub fn address(&self) -> Address {
-        self.wallet.address()
+        // Try to downcast to EvmWallet for EVM address
+        if let Some(evm) = self.wallet.downcast_ref::<EvmWallet>() {
+            return evm.address();
+        }
+        Address::ZERO
+    }
+
+    /// Get the agent's wallet pubkey string.
+    pub fn pubkey(&self) -> String {
+        self.wallet.pubkey()
     }
 
     /// Get the agent's chain.
@@ -40,7 +49,7 @@ impl Agent {
 
     /// Get native token balance.
     pub async fn balance(&self) -> Result<U256> {
-        self.connector.balance(self.wallet.address()).await
+        self.connector.balance(self.address()).await
     }
 
     /// Get current block number.
@@ -50,7 +59,7 @@ impl Agent {
 
     /// Get the agent's nonce.
     pub async fn nonce(&self) -> Result<u64> {
-        self.connector.nonce(self.wallet.address()).await
+        self.connector.nonce(self.address()).await
     }
 
     /// Access the DEX module.
@@ -69,7 +78,7 @@ impl Agent {
     }
 
     /// Access the wallet.
-    pub fn wallet(&self) -> &Wallet {
+    pub fn wallet(&self) -> &Box<dyn Wallet> {
         &self.wallet
     }
 
@@ -82,14 +91,14 @@ impl Agent {
 /// Builder for constructing agents.
 #[derive(Default)]
 pub struct AgentBuilder {
-    wallet: Option<Wallet>,
+    wallet: Option<Box<dyn Wallet>>,
     chain: Option<Chain>,
     rpc_url: Option<String>,
 }
 
 impl AgentBuilder {
     /// Set the wallet for this agent.
-    pub fn wallet(mut self, wallet: Wallet) -> Self {
+    pub fn wallet(mut self, wallet: Box<dyn Wallet>) -> Self {
         self.wallet = Some(wallet);
         self
     }
