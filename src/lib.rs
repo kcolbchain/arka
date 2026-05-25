@@ -8,6 +8,8 @@ pub mod chain;
 pub mod chains;
 pub mod dex;
 pub mod mpp;
+#[cfg(feature = "ritual")]
+pub mod compute;
 pub mod oracle;
 pub mod tx;
 pub mod wallet;
