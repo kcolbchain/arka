@@ -7,3 +7,6 @@
 //! deployments arka is designed to support.
 
 pub mod arbitrum;
+
+#[cfg(feature = "solana")]
+pub mod solana;
