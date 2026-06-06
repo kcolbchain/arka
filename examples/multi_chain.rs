@@ -34,5 +34,11 @@ async fn main() -> Result<()> {
         );
     }
 
+    // Solana Example
+    let solana = arka::chain::solana::SolanaChain::new()?;
+    let solana_wallet = solana_sdk::signature::Keypair::new();
+    let balance = solana.balance(&solana_wallet.pubkey()).await.unwrap_or(0);
+    println!("solana       | balance: {} lamports | gas: native", balance);
+
     Ok(())
 }
