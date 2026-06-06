@@ -7,3 +7,7 @@
 //! deployments arka is designed to support.
 
 pub mod arbitrum;
+
+/// Solana chain primitives — feature-gated behind `solana` feature flag.
+#[cfg(feature = "solana")]
+pub mod solana;
