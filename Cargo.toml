@@ -22,5 +22,15 @@ rand = "0.8"
 async-trait = "0.1"
 url = "2"
 
+# Optional: Solana support
+solana-client = { version = "2", optional = true }
+solana-sdk = { version = "2", optional = true }
+spl-token = { version = "7", optional = true }
+spl-associated-token-account = { version = "6", optional = true }
+
+[features]
+default = []
+solana = ["solana-client", "solana-sdk", "spl-token", "spl-associated-token-account"]
+
 [dev-dependencies]
 tokio-test = "0.4"

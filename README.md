@@ -84,7 +84,7 @@ async fn main() -> Result<()> {
 | `arka::dex` | 🚧 WIP | DEX swap execution, routing |
 | `arka::mpp` | 🚧 WIP | Machine Payments Protocol client |
 | `arka::oracle` | 🚧 WIP | Price feeds, TWAP |
-| `arka::solana` | 📋 Planned | Solana chain connector |
+| `arka::solana` | 🚧 WIP | Solana chain connector |
 | `arka::cosmos` | 📋 Planned | Cosmos chain connector |
 
 ## Quick Start
@@ -108,7 +108,7 @@ cargo run --example basic_agent
 | `basic_agent` | Create agent, check balance, send transaction |
 | `dex_swap` | Swap tokens on Uniswap V3 |
 | `mpp_payment` | Pay for an API using MPP on Tempo |
-| `multi_chain` | Same agent operating across Base + Arbitrum + Optimism |
+| `multi_chain` | Same agent operating across Base + Arbitrum + Optimism + Tempo + Solana (feature `solana`) |
 | `switchboard_x402_client` | Pay a [switchboard](https://github.com/kcolbchain/switchboard)-served HTTP-402 endpoint. Cross-language interop demo (Rust ↔ Python). |
 
 ## MCP
