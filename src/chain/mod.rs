@@ -6,6 +6,8 @@ use std::fmt;
 mod connector;
 pub use connector::ChainConnector;
 
+pub mod solana;
+
 /// Supported blockchain networks.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Chain {
@@ -18,6 +20,7 @@ pub enum Chain {
     Bsc,
     Tempo,
     TempoTestnet,
+    Solana,
 }
 
 impl Chain {
@@ -33,6 +36,7 @@ impl Chain {
             Chain::Bsc => 56,
             Chain::Tempo => 4217,
             Chain::TempoTestnet => 42429,
+            Chain::Solana => 0, // Solana doesn't use EVM chain ID
         }
     }
 
@@ -48,6 +52,7 @@ impl Chain {
             Chain::Bsc => "https://bsc-dataseed.binance.org",
             Chain::Tempo => "https://rpc.tempo.xyz",
             Chain::TempoTestnet => "https://rpc.testnet.tempo.xyz",
+            Chain::Solana => "https://api.mainnet-beta.solana.com",
         }
     }
 
@@ -59,6 +64,7 @@ impl Chain {
             Chain::Polygon => "MATIC",
             Chain::Bsc => "BNB",
             Chain::Tempo | Chain::TempoTestnet => "USDC", // Tempo has no native gas token
+            Chain::Solana => "SOL",
         }
     }
 
@@ -79,6 +85,7 @@ impl Chain {
             Chain::Bsc => "https://bscscan.com",
             Chain::Tempo => "https://explorer.tempo.xyz",
             Chain::TempoTestnet => "https://explorer.testnet.tempo.xyz",
+            Chain::Solana => "https://solscan.io",
         }
     }
 }
@@ -95,6 +102,7 @@ impl fmt::Display for Chain {
             Chain::Bsc => write!(f, "bsc"),
             Chain::Tempo => write!(f, "tempo"),
             Chain::TempoTestnet => write!(f, "tempo-testnet"),
+            Chain::Solana => write!(f, "solana"),
         }
     }
 }
