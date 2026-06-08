@@ -92,3 +92,32 @@ impl ChainConnector {
         &self.provider
     }
 }
+
+
+// chain/solana.rs
+pub struct Chain {
+    connection: sol::client::Connection,
+}
+
+impl Chain {
+    pub fn new(connection: impl 'static + Clone) -> Self {
+        Self { connection }
+    }
+
+    pub fn balance(&self, token_id: &str) -> Result<(), String> {
+        let result = self.connection.get_balance(token_id);
+        Ok(result.map(|res| res))
+    }
+
+    pub fn transfer(&self, from: &str, to: &str, amount: u64) -> Result<(), String> {
+        if let Some(res) = self.connection.transfer(from.to_string(), to.to_string(), amount) {
+            Ok(format!("Transfer of {} to {} with result {}", amount, to, res))
+        } else {
+            Err(String::from("No balance found"))
+        }
+    }
+
+    pub fn get_chain_id(&self) -> String {
+        "Solana".to_string()
+    }
+}
