@@ -27,3 +27,4 @@ pub mod prelude {
     pub use crate::wallet::Wallet;
     pub use alloy::primitives::{Address, U256};
 }
+pub mod cr8;
