@@ -7,3 +7,4 @@
 //! deployments arka is designed to support.
 
 pub mod arbitrum;
+pub mod solana;
