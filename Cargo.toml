@@ -22,5 +22,11 @@ rand = "0.8"
 async-trait = "0.1"
 url = "2"
 
+# Solana dependencies
+solana-sdk = "2"
+solana-client = "2"
+spl-token = "4"
+spl-associated-token-account = "3"
+
 [dev-dependencies]
 tokio-test = "0.4"

@@ -22,6 +22,7 @@ pub mod prelude {
     pub use crate::agent::{Agent, AgentBuilder};
     pub use crate::chain::Chain;
     pub use crate::chains::arbitrum::{AgentDepositClient, ArbitrumContracts};
+    pub use crate::chains::solana::{SolanaConstants, SplTokenClient};
     pub use crate::error::{ArkaError, Result};
     pub use crate::mcp::{AgentDepositTool, ArkaTool, BalanceTool, McpServer, SwapQuoteTool};
     pub use crate::wallet::Wallet;

@@ -65,7 +65,7 @@ async fn main() -> Result<()> {
 
 ## Features
 
-- **Multi-chain** — EVM (Ethereum, Arbitrum, Optimism, Base, Avalanche, Tempo) from one agent. Solana and Cosmos planned.
+- **Multi-chain** — EVM (Ethereum, Arbitrum, Optimism, Base, Avalanche, Tempo) + Solana from one agent. Cosmos planned.
 - **Wallet management** — Generate, import, derive. Sign transactions. Manage multiple wallets.
 - **DEX interaction** — Swap, add/remove liquidity, read pool state. Uniswap V3, Aerodrome, Trader Joe.
 - **MPP payments** — Native support for Machine Payments Protocol. Agent pays for APIs, services, compute.
@@ -79,12 +79,12 @@ async fn main() -> Result<()> {
 |--------|--------|-------------|
 | `arka::agent` | ✅ MVP | Agent builder, lifecycle, configuration |
 | `arka::wallet` | ✅ MVP | Key generation, signing, multi-wallet |
-| `arka::chain` | ✅ MVP | EVM chain connectors, RPC management |
+| `arka::chain` | ✅ MVP | EVM + Solana chain connectors, RPC management |
 | `arka::tx` | ✅ MVP | Transaction building, gas estimation, simulation |
 | `arka::dex` | 🚧 WIP | DEX swap execution, routing |
 | `arka::mpp` | 🚧 WIP | Machine Payments Protocol client |
 | `arka::oracle` | 🚧 WIP | Price feeds, TWAP |
-| `arka::solana` | 📋 Planned | Solana chain connector |
+| `arka::solana` | ✅ MVP | Solana chain connector — SOL balance, SOL/SPL transfers |
 | `arka::cosmos` | 📋 Planned | Cosmos chain connector |
 
 ## Quick Start

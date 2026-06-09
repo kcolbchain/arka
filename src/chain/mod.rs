@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 
 mod connector;
+pub mod solana_connector;
 pub use connector::ChainConnector;
 
 /// Supported blockchain networks.
@@ -18,10 +19,12 @@ pub enum Chain {
     Bsc,
     Tempo,
     TempoTestnet,
+    Solana,
+    SolanaDevnet,
 }
 
 impl Chain {
-    /// Chain ID for EVM networks.
+    /// Chain ID for EVM networks. Returns 0 for non-EVM chains (Solana).
     pub fn chain_id(&self) -> u64 {
         match self {
             Chain::Ethereum => 1,
@@ -33,6 +36,8 @@ impl Chain {
             Chain::Bsc => 56,
             Chain::Tempo => 4217,
             Chain::TempoTestnet => 42429,
+            // Solana doesn't use EVM chain IDs — return 0 as sentinel
+            Chain::Solana | Chain::SolanaDevnet => 0,
         }
     }
 
@@ -48,6 +53,8 @@ impl Chain {
             Chain::Bsc => "https://bsc-dataseed.binance.org",
             Chain::Tempo => "https://rpc.tempo.xyz",
             Chain::TempoTestnet => "https://rpc.testnet.tempo.xyz",
+            Chain::Solana => "https://api.mainnet-beta.solana.com",
+            Chain::SolanaDevnet => "https://api.devnet.solana.com",
         }
     }
 
@@ -59,12 +66,18 @@ impl Chain {
             Chain::Polygon => "MATIC",
             Chain::Bsc => "BNB",
             Chain::Tempo | Chain::TempoTestnet => "USDC", // Tempo has no native gas token
+            Chain::Solana | Chain::SolanaDevnet => "SOL",
         }
     }
 
     /// Whether this chain uses stablecoins for gas (Tempo).
     pub fn stablecoin_gas(&self) -> bool {
         matches!(self, Chain::Tempo | Chain::TempoTestnet)
+    }
+
+    /// Whether this is a Solana chain (non-EVM).
+    pub fn is_solana(&self) -> bool {
+        matches!(self, Chain::Solana | Chain::SolanaDevnet)
     }
 
     /// Block explorer base URL.
@@ -79,6 +92,8 @@ impl Chain {
             Chain::Bsc => "https://bscscan.com",
             Chain::Tempo => "https://explorer.tempo.xyz",
             Chain::TempoTestnet => "https://explorer.testnet.tempo.xyz",
+            Chain::Solana => "https://explorer.solana.com",
+            Chain::SolanaDevnet => "https://explorer.solana.com/?cluster=devnet",
         }
     }
 }
@@ -95,6 +110,8 @@ impl fmt::Display for Chain {
             Chain::Bsc => write!(f, "bsc"),
             Chain::Tempo => write!(f, "tempo"),
             Chain::TempoTestnet => write!(f, "tempo-testnet"),
+            Chain::Solana => write!(f, "solana"),
+            Chain::SolanaDevnet => write!(f, "solana-devnet"),
         }
     }
 }
