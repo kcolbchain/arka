@@ -22,5 +22,12 @@ rand = "0.8"
 async-trait = "0.1"
 url = "2"
 
+# Solana dependencies
+solana-client = "0.37"
+solana-sdk = "0.37"
+solana-transaction-status = "0.37"
+spl-token = "4"
+solders = "0.26"
+
 [dev-dependencies]
 tokio-test = "0.4"
