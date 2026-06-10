@@ -27,3 +27,11 @@ pub mod prelude {
     pub use crate::wallet::Wallet;
     pub use alloy::primitives::{Address, U256};
 }
+
+/// Solana module re-exports.
+pub mod solana {
+    pub use crate::chain::solana::{
+        SolanaConnector, SolanaConfig, CommitmentLevel,
+        constants, tokens,
+    };
+}
