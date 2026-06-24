@@ -4,6 +4,8 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 
 mod connector;
+mod solana;
+pub use solana::SolanaChain;
 pub use connector::ChainConnector;
 
 /// Supported blockchain networks.
@@ -18,6 +20,7 @@ pub enum Chain {
     Bsc,
     Tempo,
     TempoTestnet,
+    Solana,
 }
 
 impl Chain {
@@ -33,6 +36,7 @@ impl Chain {
             Chain::Bsc => 56,
             Chain::Tempo => 4217,
             Chain::TempoTestnet => 42429,
+            Chain::Solana => 0,
         }
     }
 
@@ -48,6 +52,7 @@ impl Chain {
             Chain::Bsc => "https://bsc-dataseed.binance.org",
             Chain::Tempo => "https://rpc.tempo.xyz",
             Chain::TempoTestnet => "https://rpc.testnet.tempo.xyz",
+            Chain::Solana => "https://api.mainnet-beta.solana.com",
         }
     }
 
@@ -58,13 +63,14 @@ impl Chain {
             Chain::Avalanche => "AVAX",
             Chain::Polygon => "MATIC",
             Chain::Bsc => "BNB",
-            Chain::Tempo | Chain::TempoTestnet => "USDC", // Tempo has no native gas token
+            Chain::Tempo | Chain::TempoTestnet => "USDC",
+            Chain::Solana => "SOL", // Tempo has no native gas token
         }
     }
 
     /// Whether this chain uses stablecoins for gas (Tempo).
     pub fn stablecoin_gas(&self) -> bool {
-        matches!(self, Chain::Tempo | Chain::TempoTestnet)
+        matches!(self, Chain::Tempo | Chain::TempoTestnet | Chain::Solana)
     }
 
     /// Block explorer base URL.
@@ -79,6 +85,7 @@ impl Chain {
             Chain::Bsc => "https://bscscan.com",
             Chain::Tempo => "https://explorer.tempo.xyz",
             Chain::TempoTestnet => "https://explorer.testnet.tempo.xyz",
+            Chain::Solana => "https://explorer.solana.com",
         }
     }
 }
@@ -95,6 +102,7 @@ impl fmt::Display for Chain {
             Chain::Bsc => write!(f, "bsc"),
             Chain::Tempo => write!(f, "tempo"),
             Chain::TempoTestnet => write!(f, "tempo-testnet"),
+            Chain::Solana => write!(f, "solana"),
         }
     }
 }

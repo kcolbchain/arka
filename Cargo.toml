@@ -24,3 +24,7 @@ url = "2"
 
 [dev-dependencies]
 tokio-test = "0.4"
+solana-client = "2.1"
+solana-sdk = "2.1"
+spl-token = "7"
+anyhow = "1"
