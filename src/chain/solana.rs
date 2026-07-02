@@ -7,6 +7,7 @@ use solana_sdk::{
     system_instruction,
     transaction::Transaction,
 };
+use spl_associated_token_account::get_associated_token_address;
 use std::str::FromStr;
 
 pub struct SolanaChain {
@@ -76,16 +77,19 @@ impl SolanaChain {
         &self,
         from: &Keypair,
         token_mint: &str,
-        to_token_account: &str,
+        to_wallet: &str,
         amount: u64,
     ) -> Result<String> {
         let mint_pubkey = Pubkey::from_str(token_mint)?;
-        let to_pubkey = Pubkey::from_str(to_token_account)?;
+        let to_pubkey = Pubkey::from_str(to_wallet)?;
+
+        let from_ata = get_associated_token_address(&from.pubkey(), &mint_pubkey);
+        let to_ata = get_associated_token_address(&to_pubkey, &mint_pubkey);
 
         let instruction = spl_token::instruction::transfer(
-            &spl_token::id(),
-            &from.pubkey(),
-            &to_pubkey,
+            &spl_token::ID,
+            &from_ata,
+            &to_ata,
             &from.pubkey(),
             &[],
             amount,

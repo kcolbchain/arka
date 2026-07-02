@@ -21,10 +21,11 @@ hex = "0.4"
 rand = "0.8"
 async-trait = "0.1"
 url = "2"
-
-[dev-dependencies]
-tokio-test = "0.4"
 solana-client = "2.1"
 solana-sdk = "2.1"
 spl-token = "7"
+spl-associated-token-account = "4"
 anyhow = "1"
+
+[dev-dependencies]
+tokio-test = "0.4"
