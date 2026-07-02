@@ -58,9 +58,7 @@ impl McpServer {
             return id.map(|id| jsonrpc_error(id, -32600, "missing JSON-RPC method"));
         };
 
-        let Some(id) = id else {
-            return None;
-        };
+        let id = id?;
 
         let result = match method {
             "initialize" => self.initialize_result(&request),

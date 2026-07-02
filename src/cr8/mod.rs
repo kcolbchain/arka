@@ -1,7 +1,7 @@
 // arka::cr8 — CR8Client trait, builder, errors per create-protocol/cr8/specs/arka-cr8-client.md
-use crate::error::ArkaError;
-use crate::wallet::switchboard::SwitchboardWallet;
 use crate::chain::Chain;
+use crate::error::ArkaError;
+use crate::wallet::Wallet;
 use std::collections::HashMap;
 
 /// CR8 protocol error types (spec §3)
@@ -25,8 +25,8 @@ pub enum CR8Error {
 #[async_trait::async_trait]
 pub trait CR8Client: Send + Sync {
     async fn register(&self) -> Result<(), CR8Error>;
-    async fn deposit(&self, amount: u64) -> Result<(), CR8Error>;
-    async fn withdraw(&self, amount: u64) -> Result<(), CR8Error>;
+    async fn deposit(&self, _amount: u64) -> Result<(), CR8Error>;
+    async fn withdraw(&self, _amount: u64) -> Result<(), CR8Error>;
     async fn claim(&self) -> Result<u64, CR8Error>;
     async fn complete(&self) -> Result<(), CR8Error>;
     async fn balance(&self) -> Result<u64, CR8Error>;
@@ -45,8 +45,14 @@ pub trait CR8ClientRecovery: CR8Client {
 /// Builder for constructing CR8 clients (spec §2)
 pub struct CR8ClientBuilder {
     chain: Option<Chain>,
-    wallet: Option<SwitchboardWallet>,
+    wallet: Option<Wallet>,
     contract_address: Option<String>,
+}
+
+impl Default for CR8ClientBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl CR8ClientBuilder {
@@ -63,7 +69,7 @@ impl CR8ClientBuilder {
         self
     }
 
-    pub fn with_wallet(mut self, wallet: SwitchboardWallet) -> Self {
+    pub fn with_wallet(mut self, wallet: Wallet) -> Self {
         self.wallet = Some(wallet);
         self
     }
@@ -75,23 +81,25 @@ impl CR8ClientBuilder {
 
     /// Build a default CR8 client implementation
     pub fn build(self) -> Result<DefaultCR8Client, CR8Error> {
-        let chain = self.chain.ok_or(CR8Error::InvalidArgument("chain required".into()))?;
-        let wallet = self.wallet.ok_or(CR8Error::InvalidArgument("wallet required".into()))?;
-        let contract_address = self.contract_address
-            .ok_or(CR8Error::InvalidArgument("contract address required".into()))?;
-
         Ok(DefaultCR8Client {
-            chain,
-            wallet,
-            contract_address,
+            chain: self
+                .chain
+                .ok_or_else(|| CR8Error::InvalidArgument("chain required".into()))?,
+            wallet: self
+                .wallet
+                .ok_or_else(|| CR8Error::InvalidArgument("wallet required".into()))?,
+            contract_address: self
+                .contract_address
+                .ok_or_else(|| CR8Error::InvalidArgument("contract address required".into()))?,
         })
     }
 }
 
 /// Default implementation of CR8Client
+#[allow(dead_code)]
 pub struct DefaultCR8Client {
     chain: Chain,
-    wallet: SwitchboardWallet,
+    wallet: Wallet,
     contract_address: String,
 }
 
@@ -102,12 +110,12 @@ impl CR8Client for DefaultCR8Client {
         Ok(())
     }
 
-    async fn deposit(&self, amount: u64) -> Result<(), CR8Error> {
+    async fn deposit(&self, _amount: u64) -> Result<(), CR8Error> {
         // TODO: actual contract call
         Ok(())
     }
 
-    async fn withdraw(&self, amount: u64) -> Result<(), CR8Error> {
+    async fn withdraw(&self, _amount: u64) -> Result<(), CR8Error> {
         // TODO: actual contract call
         Ok(())
     }
