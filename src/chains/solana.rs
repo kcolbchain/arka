@@ -128,7 +128,8 @@ impl SolanaConnector {
             &owner,
             &[],
             amount,
-        )?;
+        )
+        .map_err(|e| SolanaError::TransactionFailed(format!("SPL token instruction error: {e}")))?;
         let recent_blockhash = self.client.get_latest_blockhash()?;
         let tx = Transaction::new_signed_with_payer(
             &[ix],

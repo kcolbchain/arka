@@ -112,6 +112,8 @@ impl fmt::Display for Chain {
             Chain::Bsc => write!(f, "bsc"),
             Chain::Tempo => write!(f, "tempo"),
             Chain::TempoTestnet => write!(f, "tempo-testnet"),
+            Chain::Solana => write!(f, "solana"),
+            Chain::SolanaDevnet => write!(f, "solana-devnet"),
         }
     }
 }
