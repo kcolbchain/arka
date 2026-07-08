@@ -18,10 +18,16 @@ pub enum Chain {
     Bsc,
     Tempo,
     TempoTestnet,
+    /// Solana mainnet — uses ed25519 keypairs and a very different tx model.
+    /// Supported behind the ``solana`` feature flag.
+    Solana,
+    /// Solana devnet.
+    SolanaDevnet,
 }
 
 impl Chain {
-    /// Chain ID for EVM networks.
+    /// Chain ID. For EVM chains this is the EIP-155 chain ID; for non-EVM chains
+    /// (e.g. Solana) this returns 0 and is semantically meaningless.
     pub fn chain_id(&self) -> u64 {
         match self {
             Chain::Ethereum => 1,
@@ -33,6 +39,7 @@ impl Chain {
             Chain::Bsc => 56,
             Chain::Tempo => 4217,
             Chain::TempoTestnet => 42429,
+            Chain::Solana | Chain::SolanaDevnet => 0,
         }
     }
 
@@ -48,6 +55,8 @@ impl Chain {
             Chain::Bsc => "https://bsc-dataseed.binance.org",
             Chain::Tempo => "https://rpc.tempo.xyz",
             Chain::TempoTestnet => "https://rpc.testnet.tempo.xyz",
+            Chain::Solana => "https://api.mainnet-beta.solana.com",
+            Chain::SolanaDevnet => "https://api.devnet.solana.com",
         }
     }
 
@@ -58,13 +67,19 @@ impl Chain {
             Chain::Avalanche => "AVAX",
             Chain::Polygon => "MATIC",
             Chain::Bsc => "BNB",
-            Chain::Tempo | Chain::TempoTestnet => "USDC", // Tempo has no native gas token
+            Chain::Tempo | Chain::TempoTestnet => "USDC",
+            Chain::Solana | Chain::SolanaDevnet => "SOL",
         }
     }
 
     /// Whether this chain uses stablecoins for gas (Tempo).
     pub fn stablecoin_gas(&self) -> bool {
         matches!(self, Chain::Tempo | Chain::TempoTestnet)
+    }
+
+    /// Whether this chain is Solana-based (non-EVM).
+    pub fn is_solana(&self) -> bool {
+        matches!(self, Chain::Solana | Chain::SolanaDevnet)
     }
 
     /// Block explorer base URL.
@@ -79,6 +94,8 @@ impl Chain {
             Chain::Bsc => "https://bscscan.com",
             Chain::Tempo => "https://explorer.tempo.xyz",
             Chain::TempoTestnet => "https://explorer.testnet.tempo.xyz",
+            Chain::Solana => "https://solscan.io",
+            Chain::SolanaDevnet => "https://solscan.io/?cluster=devnet",
         }
     }
 }
